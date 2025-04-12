@@ -1,3 +1,6 @@
 [submodule "libs/sick_visionary_cpp_shared"]
 	path = libs/sick_visionary_cpp_shared
 	url = https://github.com/SICKAG/sick_visionary_cpp_shared.git
+[submodule "external/sick_visionary_cpp_shared"]
+	path = external/sick_visionary_cpp_shared
+	url = https://github.com/SICKAG/sick_visionary_cpp_shared.git
