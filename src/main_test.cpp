@@ -2,7 +2,7 @@
  * Below is the code we have been attempting to use. This does not contain any
  * volumetric calculations yet, as we have not been able to successfully grab
  * frames from the sensor. The failure points in this code are:
- * - lines 59-68 (startAcquisition)
+ * - lines 60-69 (startAcquisition)
  * - lines 108-111 (attempting to grab frames)
  */
 
@@ -25,9 +25,9 @@ using namespace visionary;
 
 /**
  * Connect & login to sensor
- * 
+ *
  * /param shared pointer to a VisionaryControl object
- * 
+ *
  * /retval true, else false if fail to connect or login
  */
 bool openSensor(std::shared_ptr<VisionaryControl>& visControl) {
@@ -50,11 +50,11 @@ bool openSensor(std::shared_ptr<VisionaryControl>& visControl) {
 }
 
 /**
- * Attempts to start at acquisition. 
+ * Attempts to start at acquisition.
  * This is the MAIN failure point we have had in testing.
- * 
+ *
  * /param shared pointer to a VisionaryControl object
- * 
+ *
  * /retval true, else false if fail to start acquisition
  */
 bool startAcquisition(std::shared_ptr<VisionaryControl>& visControl) {
@@ -70,7 +70,7 @@ bool startAcquisition(std::shared_ptr<VisionaryControl>& visControl) {
 
 /**
  * Logs out from sensor and disconnects
- * 
+ *
  * /param shared pointer to a VisionaryControl object
  */
 void closeSensor(std::shared_ptr<VisionaryControl>& visControl) {
@@ -97,8 +97,8 @@ int main(int argc, char* argv[]) {
 
     /**
      * Infinite loop to attempt to grab frames from sensor.
-     * 
-     * Will immediately error on line 100 (frameGrabber.getNextFrame(visData)).
+     *
+     * Will immediately error on line 108 (frameGrabber.getNextFrame(visData)).
      * This is 1 of the failure points we have ran into in testing.
      */
     FrameGrabber<VisionarySData> frameGrabber(ipAddr, port, timeout);
