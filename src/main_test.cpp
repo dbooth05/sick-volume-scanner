@@ -18,7 +18,7 @@
 #include "VisionaryControl.h"
 
 const std::string ipAddr = "10.11.11.57";
-const int32_t port = 2122;
+const int32_t port = 2123;
 const uint32_t timeout = 5000;
 
 using namespace visionary;
@@ -83,39 +83,67 @@ void closeSensor(std::shared_ptr<VisionaryControl>& visControl) {
 int main(int argc, char* argv[]) {
 
     std::shared_ptr<VisionaryControl> visControl = std::make_shared<VisionaryControl>();
-
-    if (!openSensor(visControl)) {
-        return 1;
-    }
+    //
+    // if (!openSensor(visControl)) {
+    //     return 1;
+    // }
 
     std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    if (!startAcquisition(visControl)) {
-        closeSensor(visControl);
+    // if (!startAcquisition(visControl)) {
+    //     closeSensor(visControl);
+    //     return 1;
+    // }
+
+    std::shared_ptr<VisionarySData> visData = std::make_shared<VisionarySData>();
+    VisionaryDataStream dataStream(visData);
+
+    if (!dataStream.open(ipAddr, port, 5000)) {
+        std::cerr << "Failed to open connection" << std::endl;
         return 1;
     }
 
-    /**
-     * Infinite loop to attempt to grab frames from sensor.
-     *
-     * Will immediately error on line 108 (frameGrabber.getNextFrame(visData)).
-     * This is 1 of the failure points we have ran into in testing.
-     */
-    FrameGrabber<VisionarySData> frameGrabber(ipAddr, port, timeout);
-    std::shared_ptr<VisionarySData> visData = std::make_shared<VisionarySData>();
+    std::cout << "test" << std::endl;
 
-    while (true) {
-        if (!frameGrabber.getNextFrame(visData)) {
-            std::cout << "Failed to grab frame" << std::endl;
-            closeSensor(visControl);
-            return 1;
+    while (dataStream.isConnected()) {
+
+        std::cout << "testing loop " << std::endl;
+
+        if (!dataStream.getNextFrame()) {
+            std::cerr << "Failed to get next frame" << std::endl;
         } else {
-            std::clog << "Successfully grabbed frame" << std::endl;
+            std::cout << "get a frame" << std::endl;
+
+            std::cout << visData->getTimestamp() << std::endl;
         }
+
+        std::cout << "passed getNextFrame" << std::endl;
     }
-    /**
-     * End of attempting to grab frames
-     */
+
+    dataStream.close();
+    std::cout << "Closed connection" << std::endl;
+
+    // /**
+    //  * Infinite loop to attempt to grab frames from sensor.
+    //  *
+    //  * Will immediately error on line 108 (frameGrabber.getNextFrame(visData)).
+    //  * This is 1 of the failure points we have ran into in testing.
+    //  */
+    // FrameGrabber<VisionarySData> frameGrabber(ipAddr, port, timeout);
+    // std::shared_ptr<VisionarySData> visData = std::make_shared<VisionarySData>();
+    //
+    // while (true) {
+    //     if (!frameGrabber.getNextFrame(visData)) {
+    //         std::cout << "Failed to grab frame" << std::endl;
+    //         closeSensor(visControl);
+    //         return 1;
+    //     } else {
+    //         std::clog << "Successfully grabbed frame" << std::endl;
+    //     }
+    // }
+    // /**
+    //  * End of attempting to grab frames
+    //  */
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
